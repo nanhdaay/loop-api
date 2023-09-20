@@ -18,22 +18,16 @@ var whitelist = [
   "https://loop-fe.onrender.com",
   "loop-fe.onrender.com",
 ];
-var corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-};
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Origin", true);
   next();
 });
 app.use(express.json());
-app.use(cors(corsOptions));
+app.use(
+  cors({ origin: whitelist, credentials: true, exposedHeaders: ["set-cookie"] })
+);
 app.use(cookieParser());
 
 const storage = multer.diskStorage({
