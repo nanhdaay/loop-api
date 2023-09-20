@@ -9,6 +9,11 @@ import authRoutes from "./routes/auth.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import multer from "multer";
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 var whitelist = [
   "localhost:3000",
@@ -31,12 +36,14 @@ app.use(cookieParser());
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../client/public/upload");
+    cb(null, "./public/uploads");
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + file.originalname);
   },
 });
+app.use(express.static('public'));
+app.use('/uploads', express.static(__dirname + '/uploads'));
 
 const upload = multer({ storage: storage });
 
